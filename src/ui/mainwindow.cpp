@@ -61,6 +61,7 @@ void MainWindow::btnStartClicked_SLOT(bool checked)
 		qDebug() << Q_FUNC_INFO << "File read error!";
 		return;
 	}
+	file.close();
 
 	// get 'File' tags
 	QStringList uniqueFileNames;
