@@ -27,10 +27,12 @@ INCLUDEPATH +=  ./src \
 
 SOURCES += \
         src/main.cpp \
-        src/ui/mainwindow.cpp
+        src/ui/mainwindow.cpp \
+    src/keilprojmodifier.cpp
 
 HEADERS += \
-        src/ui/mainwindow.h
+        src/ui/mainwindow.h \
+    src/keilprojmodifier.h
 
 FORMS += \
         src/ui/mainwindow.ui
