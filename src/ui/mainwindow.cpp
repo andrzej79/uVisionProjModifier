@@ -19,6 +19,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 	_keilProjMod = new KeilProjModifier( this );
 	createConnections();
+
+	//
+	QPixmap pixLogoKeil;
+	pixLogoKeil.load("://gfx/1200px-Keil_logo.svg.png");
+	ui->lbKeilLogo->setPixmap(pixLogoKeil.scaled(200, 64, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+	QPixmap pixLogoCs;
+	pixLogoCs.load("://gfx/cs-lab-logo_web2.png");
+	ui->lbCsLogo->setPixmap(pixLogoCs.scaled(64, 64, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
 }
 
 /**
@@ -128,90 +137,6 @@ void MainWindow::btnFileOpenClicked_SLOT()
 		ui->cbFileShowFilter->addItem( groups[i] );
 	}
 
-
-//	QFile file( fileName );
-//	QDomDocument doc;
-//	qDebug() << Q_FUNC_INFO << "loading XML file";
-//	if( !file.open( QIODevice::ReadOnly ) || !doc.setContent( &file ) ) {
-//		qDebug() << Q_FUNC_INFO << "File read error!";
-//		return;
-//	}
-//	file.close();
-
-//	// get 'File' tags
-//	QStringList uniqueFileNames;
-//	QDomNodeList files = doc.elementsByTagName( "File" );
-//	qDebug() << Q_FUNC_INFO << "QDomNodeList files.size() = " << files.size();
-//	for( int i = 0; i < files.size(); i++ ) {
-//		QDomNode node = files.at(i);
-//		QDomElement fName = node.firstChildElement("FileName");
-//		if( fName.isNull() ) {
-//			// wtf? no file name child?
-//			qDebug() << "null!";
-//			continue;
-//		}
-//		if(!fName.text().endsWith(".cpp")) {
-//			// take only cpp files
-//			continue;
-//		}
-
-//		QDomElement fileOption = node.firstChildElement("FileOption");
-//		QDomElement commonProp = fileOption.firstChildElement("CommonProperty");
-//		QDomElement fileArmAds = fileOption.firstChildElement("FileArmAds");
-//		QDomElement cAds = fileArmAds.firstChildElement("Cads");
-//		QDomElement variousControls = cAds.firstChildElement("VariousControls");
-//		QDomElement miscControls = variousControls.firstChildElement("MiscControls");
-//		if( miscControls.isNull() == false ) {
-//			qDebug() << "misc controls ;" << miscControls.text() << "; found in file: " << fName.text();
-//			if( miscControls.text().contains("--cpp11") == false ) {
-//				miscControls.firstChild().setNodeValue( miscControls.text() + " " + "--cpp11" );
-//			}
-//		} else {
-//			fileOption = doc.createElement("FileOption");
-//			fileArmAds = doc.createElement("FileArmAds");
-//			cAds = doc.createElement("Cads");
-//			variousControls = doc.createElement("VariousControls");
-//			miscControls = doc.createElement("MiscControls");
-//			QDomText mcval = doc.createTextNode("--cpp11");
-//			node.appendChild(fileOption).appendChild(fileArmAds).appendChild(cAds).appendChild(variousControls).appendChild(miscControls).appendChild(mcval);
-
-//			if( commonProp.isNull() ) {
-//				// no common props, set to default identical as uVision do so
-//				commonProp = doc.createElement("CommonProperty");
-//				QDomNode commonPropNode = fileOption.appendChild( commonProp );
-//				commonPropNode.appendChild( doc.createElement( "UseCPPCompiler" ) ).appendChild( doc.createTextNode( "2" ) );
-//				commonPropNode.appendChild( doc.createElement( "RVCTCodeConst" ) ).appendChild( doc.createTextNode( "0" ) );
-//				commonPropNode.appendChild( doc.createElement( "RVCTZI" ) ).appendChild( doc.createTextNode( "0" ) );
-//				commonPropNode.appendChild( doc.createElement( "RVCTOtherData" ) ).appendChild( doc.createTextNode( "0" ) );
-//				commonPropNode.appendChild( doc.createElement( "ModuleSelection" ) ).appendChild( doc.createTextNode( "0" ) );
-//				commonPropNode.appendChild( doc.createElement( "IncludeInBuild" ) ).appendChild( doc.createTextNode( "2" ) );
-//				commonPropNode.appendChild( doc.createElement( "AlwaysBuild" ) ).appendChild( doc.createTextNode( "2" ) );
-//				commonPropNode.appendChild( doc.createElement( "GenerateAssemblyFile" ) ).appendChild( doc.createTextNode( "2" ) );
-//				commonPropNode.appendChild( doc.createElement( "AssembleAssemblyFile" ) ).appendChild( doc.createTextNode( "2" ) );
-//				commonPropNode.appendChild( doc.createElement( "PublicsOnly" ) ).appendChild( doc.createTextNode( "2" ) );
-//				commonPropNode.appendChild( doc.createElement( "StopOnExitCode" ) ).appendChild( doc.createTextNode( "2" ) );
-//				commonPropNode.appendChild( doc.createElement( "CustomArgument" ) ).appendChild( doc.createTextNode( "" ) );
-//				commonPropNode.appendChild( doc.createElement( "IncludeLibraryModules" ) ).appendChild( doc.createTextNode( "" ) );
-//				commonPropNode.appendChild( doc.createElement( "ComprImg" ) ).appendChild( doc.createTextNode( "1" ) );
-//			}
-//		}
-
-//		if( uniqueFileNames.contains( fName.text() ) == false ) {
-//			uniqueFileNames << fName.text();
-//		}
-//	}
-
-//	// sort file names
-//	uniqueFileNames.sort( );
-
-//	auto fileNameSave = QFileDialog::getSaveFileName( this, "Save To...", fileName, "*.uvprojx" );
-//	QFile sf( fileNameSave );
-//	sf.open( QIODevice::ReadWrite );
-//	sf.resize(0);
-//	QTextStream ts( &sf );
-//	doc.save( ts, 1 );
-//	sf.close();
-
 }
 
 /**
@@ -253,6 +178,7 @@ void MainWindow::cbFilterIndexChanged_SLOT(int index)
 
 	for( int i = 0; i < grFiles.length(); i++ ) {
 		auto twi = new QTableWidgetItem( grFiles[i] );
+		twi->setFlags( twi->flags() & ~( Qt::ItemIsEditable ) );
 		ui->tabFiles->setItem( i, 0, twi );
 	}
 }

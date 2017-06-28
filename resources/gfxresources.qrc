@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>gfx/1200px-Keil_logo.svg.png</file>
+        <file>gfx/cs-lab-logo_web2.png</file>
+    </qresource>
+</RCC>

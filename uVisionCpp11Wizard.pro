@@ -36,3 +36,6 @@ HEADERS += \
 
 FORMS += \
         src/ui/mainwindow.ui
+
+RESOURCES += \
+    resources/gfxresources.qrc
