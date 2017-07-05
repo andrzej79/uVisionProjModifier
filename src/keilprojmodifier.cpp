@@ -297,7 +297,7 @@ void KeilProjModifier::sortSrcFilesInGroups(QStringList groupNames)
 		}
 
 		// sort nodes by filename
-		qSort( gFiles.begin(), gFiles.end(), []( const QDomNode &v1, const QDomNode &v2 ){
+		std::sort( gFiles.begin(), gFiles.end(), []( const QDomNode &v1, const QDomNode &v2 ){
 			return v1.firstChildElement( "FileName" ).text().toLower() < v2.firstChildElement( "FileName" ).text().toLower();
 		} );
 		// remove files childs
