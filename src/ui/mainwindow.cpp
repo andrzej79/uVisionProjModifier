@@ -44,30 +44,34 @@ MainWindow::~MainWindow()
 void MainWindow::createConnections()
 {
 	// ui connections
-	connect( ui->btnFileOpen, SIGNAL( clicked(bool) ), this, SLOT( btnFileOpenClicked_SLOT() ) );
-	connect( ui->btnQuit, SIGNAL( clicked(bool) ), this, SLOT( btnQuitClicked_SLOT() ) );
-	connect( ui->btnFileSaveAs, SIGNAL( clicked(bool) ), this, SLOT( btnFileSaveAsClicked_SLOT() ) );
-	connect( ui->cbFileShowFilter, SIGNAL( currentIndexChanged(int) ), this, SLOT( cbFilterIndexChanged_SLOT(int) ) );
+  connect( ui->btnFileOpen, &QAbstractButton::clicked, this, &MainWindow::btnFileOpenClicked_SLOT );
+  connect( ui->btnQuit, &QAbstractButton::clicked, this, &MainWindow::btnQuitClicked_SLOT );
+  connect( ui->btnFileSaveAs, &QAbstractButton::clicked, this, &MainWindow::btnFileSaveAsClicked_SLOT );
+  connect( ui->cbFileShowFilter, qOverload<int>(&QComboBox::currentIndexChanged), this, &MainWindow::cbFilterIndexChanged_SLOT );
 
-	connect( ui->btnAddCpp11Flag, &QPushButton::clicked, [this](){
-		_keilProjMod->setCpp11Flag( getSelectedFileNames(), true );
+  connect( ui->btnAddCpp11Flag, &QPushButton::clicked, this, [this](){
+    _keilProjMod->setCppOptFlags( getSelectedFileNames(), true );
 	} );
 
-	connect( ui->btnClrCpp11Flag, &QPushButton::clicked, [this](){
-		_keilProjMod->setCpp11Flag( getSelectedFileNames(), false );
+  connect( ui->btnClrCpp11Flag, &QPushButton::clicked, this, [this](){
+    _keilProjMod->setCppOptFlags( getSelectedFileNames(), false );
 	} );
 
-	connect( ui->btnFileSave, &QPushButton::clicked, [this](){
+  connect( ui->btnRemoveOpts, &QPushButton::clicked, this, [this]() {
+    _keilProjMod->setCppOptFlags( getSelectedFileNames(), false, true);
+  });
+
+  connect( ui->btnFileSave, &QPushButton::clicked, this, [this](){
 		_keilProjMod->saveProjFile();
 	} );
 
-	connect( ui->btnSortFilesInGroups, &QPushButton::clicked, [this](){
+  connect( ui->btnSortFilesInGroups, &QPushButton::clicked, this, [this](){
 		_keilProjMod->sortSrcFilesInGroups( getSelectedGroups() );
 	} );
 
 	// priv objs connections
-	connect( _keilProjMod, SIGNAL( errorMessage_SIG(QString) ), this, SLOT( kpmErrorMessage_SLOT(QString) ), Qt::UniqueConnection );
-	connect( _keilProjMod, SIGNAL( infoMessage_SIG(QString) ), this, SLOT( kpmInfoMessage_SLOT(QString) ), Qt::UniqueConnection );
+  connect( _keilProjMod, &KeilProjModifier::errorMessage_SIG, this, &MainWindow::kpmErrorMessage_SLOT);
+  connect( _keilProjMod, &KeilProjModifier::infoMessage_SIG, this, &MainWindow::kpmInfoMessage_SLOT);
 }
 
 /**
@@ -79,7 +83,7 @@ QStringList MainWindow::getSelectedFileNames()
 	// get selected filenames
 	auto selItems = ui->tabFiles->selectedItems();
 	QStringList fNames;
-	for( auto item : selItems ) {
+  for( auto &item : selItems ) {
 		fNames << item->text();
 	}
 	return fNames;
@@ -94,7 +98,7 @@ QStringList MainWindow::getSelectedGroups()
 	// get selected group names
 	auto selItems = ui->tabGroups->selectedItems();
 	QStringList gNames;
-	for( auto item: selItems ) {
+  for( auto &item: selItems ) {
 		gNames << item->text();
 	}
 	return gNames;

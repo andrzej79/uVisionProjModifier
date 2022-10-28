@@ -196,6 +196,13 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QPushButton" name="btnRemoveOpts">
+             <property name="text">
+              <string>Remove Opts</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
         </layout>

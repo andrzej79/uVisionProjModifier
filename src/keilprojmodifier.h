@@ -28,7 +28,7 @@ public:
 	QStringList getSrcFileNames ( QString groupName = "" );
 
 	// modifiers
-	void setCpp11Flag ( QStringList fileNames, bool flagState );
+  void setCppOptFlags ( QStringList fileNames, bool cpp11FlagState, bool removeAllOpts = false );
 	void sortSrcFilesInGroups (QStringList groupNames );
 
 private:

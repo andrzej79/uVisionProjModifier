@@ -172,11 +172,12 @@ QStringList KeilProjModifier::getSrcFileNames(QString groupName)
 }
 
 /**
- * @brief KeilProjModifier::setCpp11Flag
+ * @brief KeilProjModifier::setCppOptFlags
  * @param fileNames
- * @param flagState
+ * @param cpp11FlagState
+ * @param removeAllOpts
  */
-void KeilProjModifier::setCpp11Flag(QStringList fileNames, bool flagState)
+void KeilProjModifier::setCppOptFlags(QStringList fileNames, bool cpp11FlagState, bool removeAllOpts)
 {
 	if( _doc == nullptr || _doc->isNull() ) {
 		qCritical() << "no document!";
@@ -209,9 +210,14 @@ void KeilProjModifier::setCpp11Flag(QStringList fileNames, bool flagState)
 		QDomElement cAds = fileArmAds.firstChildElement("Cads");
 		QDomElement variousControls = cAds.firstChildElement("VariousControls");
 		QDomElement miscControls = variousControls.firstChildElement("MiscControls");
-		if( miscControls.isNull() == false ) {
+
+    if(removeAllOpts == true) {
+      if(fileOption.isNull() == false) {
+        node.removeChild(fileOption);
+      }
+    } else if( miscControls.isNull() == false ) {
 			qDebug() << "misc controls ;" << miscControls.text() << "; found in file: " << fName.text();
-			if( miscControls.text().contains("--cpp11") == false && flagState == true ) {
+      if( miscControls.text().contains("--cpp11") == false && cpp11FlagState == true ) {
 				// add --cpp11 flag
 				if( miscControls.text().length() > 0 ) {
 					miscControls.firstChild().setNodeValue( miscControls.text() + " " + "--cpp11" );
@@ -219,12 +225,12 @@ void KeilProjModifier::setCpp11Flag(QStringList fileNames, bool flagState)
 					miscControls.firstChild().setNodeValue( "--cpp11" );
 				}
 			}
-			if( miscControls.text().contains("--cpp11") == true && flagState == false ) {
+      if( miscControls.text().contains("--cpp11") == true && cpp11FlagState == false ) {
 				// remove --cpp11 flag
 				miscControls.firstChild().setNodeValue( miscControls.text().replace( "--cpp11", "" ) );
 				miscControls.firstChild().setNodeValue( miscControls.text().replace( "  ", " " ) );
 			}
-		} else if( flagState == true ){
+    } else if( cpp11FlagState == true ){
 			fileOption = _doc->createElement("FileOption");
 			fileArmAds = _doc->createElement("FileArmAds");
 			cAds = _doc->createElement("Cads");
@@ -254,8 +260,11 @@ void KeilProjModifier::setCpp11Flag(QStringList fileNames, bool flagState)
 			}
 		}
 	}
-
-	emit infoMessage_SIG( QString("C++11 flag %1.").arg( (flagState ? "added" : "removed") ) );
+  if(removeAllOpts == false) {
+    emit infoMessage_SIG( QString("C++11 flag %1.").arg( (cpp11FlagState ? "added" : "removed") ) );
+  } else {
+    emit infoMessage_SIG( QString("All options removed from cpp files") );
+  }
 }
 
 /**

@@ -3,6 +3,10 @@
 
 int main(int argc, char *argv[])
 {
+  QApplication::setAttribute( Qt::AA_UseHighDpiPixmaps, true );
+  //QApplication::setAttribute( Qt::AA_EnableHighDpiScaling, true );
+  QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
 	QApplication a(argc, argv);
 
 	a.setApplicationName("uVisionCpp11Wizard");
